@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>وزارة الصحة - العاصمة</title>
+    <link rel="icon" type="image/png" href="img/logo.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap');
+
+        /* --- كود منع التنسيق (CSS) --- */
+        body {
+            -webkit-user-select: none; /* Safari */
+            -ms-user-select: none;     /* IE 10+ */
+            user-select: none;         /* منع تحديد النصوص */
+            
+            background: var(--dark-bg); color: white; font-family: 'Cairo', sans-serif;
+            margin: 0; overflow-x: hidden;
+            background-image: radial-gradient(circle at top right, #1a0a0a 0%, #050608 100%);
+            min-height: 100vh;
+        }
+
+        /* السماح للمدخلات بالعمل بشكل طبيعي */
+        input, textarea {
+            -webkit-user-select: text;
+            user-select: text;
+        }
+        /* -------------------------- */
+
+        :root {
+            --primary: #ff3e3e;
+            --dark-bg: #050608;
+            --glass: rgba(255, 255, 255, 0.05);
+            --gold: #d4af37;
+            --discord: #5865F2;
+        }
+
+        .discord-btn {
+            position: fixed; top: 20px; right: 20px; z-index: 1001;
+            background: var(--discord); color: white; width: 50px; height: 50px;
+            border-radius: 12px; display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; text-decoration: none; transition: 0.3s;
+        }
+
+        #splash {
+            position: fixed; inset: 0; background: url('https://images.unsplash.com/photo-1587350859728-11769117a7a7?q=80&w=2070') center/cover;
+            z-index: 9999; display: flex; align-items: center; justify-content: center;
+        }
+        #splash::before { content: ''; position: absolute; inset: 0; background: rgba(0,0,0,0.9); }
+        
+        .login-card {
+            position: relative; background: rgba(255,255,255,0.03); backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.1); border-radius: 35px; padding: 60px 40px;
+            max-width: 600px; width: 95%; text-align: center;
+        }
+        .login-card img { width: 220px; margin-bottom: 30px; }
+
+        header {
+            display: flex; align-items: center; justify-content: center; gap: 15px;
+            padding: 25px; background: rgba(0,0,0,0.5); border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .header-logo { width: 45px; }
+
+        nav {
+            display: flex; justify-content: center; gap: 10px; padding: 12px;
+            background: rgba(0,0,0,0.7); backdrop-filter: blur(15px);
+            position: sticky; top: 0; z-index: 100; flex-wrap: wrap;
+        }
+        nav button { 
+            background: none; border: none; color: #999; padding: 12px 25px; 
+            font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 1.1rem; border-radius: 10px;
+        }
+        nav button.active { background: rgba(255,62,62,0.15); color: var(--primary); }
+
+        .container { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
+        .section { display: none; }
+        .section.active { display: block; }
+
+        .rules-container { background: var(--glass); border-radius: 30px; padding: 50px 40px; text-align: center; }
+        .rules-logo-big { width: 250px; margin-bottom: 35px; }
+        .rule-item { padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); text-align: right; opacity: 0; font-size: 1.1rem; line-height: 1.6; }
+
+        .courses-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-top: 30px; }
+        .course-card {
+            background: var(--glass); border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px; padding: 25px; text-align: center; transition: 0.3s; opacity: 0;
+        }
+        .course-card:hover { transform: translateY(-10px); border-color: var(--gold); background: rgba(255,255,255,0.08); }
+        .course-logo { width: 65px; margin-bottom: 15px; }
+        .btn-more { background: none; border: 1px solid var(--gold); color: var(--gold); padding: 8px 20px; border-radius: 8px; cursor: pointer; margin-top: 15px; transition: 0.3s; }
+
+        .duty-card {
+            background: var(--glass); border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 25px; padding: 35px; text-align: center;
+            width: 100%; max-width: 450px; margin: 0 auto; box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+        }
+        .main-input { width: 90%; padding: 15px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; color: #fff; text-align: center; margin-bottom: 20px; outline: none; }
+        .timer-text { font-size: 4rem; color: var(--gold); font-weight: 900; font-family: monospace; margin: 15px 0; }
+        .btn-red { background: var(--primary); color: white; border: none; padding: 14px 45px; border-radius: 12px; font-weight: 900; cursor: pointer; transition: 0.3s; font-size: 1.1rem; width: 85%; }
+        .btn-stop { background: white; color: black; }
+        .btn-stop:disabled { background: #444; color: #888; cursor: not-allowed; }
+
+        .admin-grid { display: flex; flex-direction: column; gap: 40px; align-items: center; }
+        .admin-row { display: flex; gap: 30px; width: 100%; justify-content: center; flex-wrap: wrap; }
+        .admin-card { flex: 1; min-width: 380px; max-width: 520px; background: rgba(255,255,255,0.02); border: 2px solid rgba(212, 175, 55, 0.25); border-radius: 35px; padding: 50px 20px; text-align: center; opacity: 0; }
+        .admin-logo { width: 180px; margin-bottom: 20px; }
+        .admin-title { color: var(--gold); font-size: 3.5rem; font-weight: 900; margin: 5px 0; }
+        .admin-name { color: #fff; font-size: 2rem; font-weight: 700; }
+
+        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); z-index: 2000; display: none; align-items: center; justify-content: center; padding: 20px; }
+        .modal-content { background: #111; border: 1px solid var(--gold); border-radius: 25px; padding: 35px; max-width: 500px; width: 100%; position: relative; text-align: center; }
+        .close-modal { position: absolute; top: 15px; left: 15px; color: white; cursor: pointer; font-size: 2rem; }
+
+        .reveal-up { animation: fadeInUp 0.8s forwards; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+    </style>
+</head>
+
+<body oncontextmenu="return false;">
+
+<a href="https://discord.gg/sYJbh4YWyV" target="_blank" class="discord-btn">
+    <i class="fab fa-discord"></i>
+</a>
+
+<div id="splash">
+    <div class="login-card animate__animated animate__backInDown">
+        <img src="img/logo.png" alt="logo">
+        <h1>وزارة الصحة - مدينة العاصمة</h1>
+        <p>هنا سوف تعرف كل شيء على القطاع دورات و قوانين و القيادة و اتمنى لك تجربة جيدة , ولا تنسى الصلاه على النبي</p>
+        <button onclick="enterSystem()" class="btn-red">دخول الموقع الآن</button>
+    </div>
+</div>
+
+<header id="main-header" style="display: none;">
+    <img src="img/logo.png" class="header-logo">
+    <div style="font-weight:900; font-size:1.6rem">وزارة الصحة - مدينة العاصمة</div>
+</header>
+
+<nav id="main-nav" style="display: none;">
+    <button onclick="tab('rules', this)" class="active">الأنظمة والقوانين</button>
+    <button onclick="tab('courses', this)">قسم الدورات</button>
+    <button onclick="tab('duty', this)">تسجيل الخدمة</button>
+    <button onclick="tab('admin', this)">قيادة الوزارة</button>
+</nav>
+
+<div class="container" id="main-container" style="display: none;">
+
+    <div id="rules" class="section active">
+        <div class="rules-container">
+            <img src="img/health egypt.png" class="rules-logo-big">
+            <h2 style="color: var(--primary); font-size: 2.2rem; margin-bottom:35px;">دستور وقوانين وزارة الصحة</h2>
+            <div id="rules-list"></div>
+        </div>
+    </div>
+
+    <div id="courses" class="section">
+        <h2 style="text-align: center; color: var(--gold); font-size: 2.5rem; margin-bottom: 10px;">الدورات التدريبية</h2>
+        <div class="courses-grid" id="courses-list"></div>
+    </div>
+
+    <div id="duty" class="section">
+        <div class="duty-card">
+            <img src="img/health egypt.png" style="width: 130px; margin-bottom: 15px;">
+            <h2 style="color: var(--gold)">تسجيل الحضور</h2>
+            <input type="text" id="my-id" class="main-input" placeholder="أدخل ID الديسكورد">
+            <div class="duty-btns">
+                <button id="start-btn" class="btn-red" onclick="startDuty()">بدء الخدمة</button>
+                <button id="stop-btn" class="btn-red btn-stop" style="display:none;" onclick="endDuty()" disabled>تسجيل خروج</button>
+            </div>
+            <div class="timer-text" id="timer">00:00:00</div>
+            <p id="wait-msg" style="color: var(--primary); display:none; font-size:0.9rem;">يجب إكمال 5 دقائق في الخدمة قبل تسجيل الخروج</p>
+        </div>
+    </div>
+
+    <div id="admin" class="section">
+        <div class="admin-grid">
+            <div class="admin-row">
+                <div class="admin-card">
+                    <img src="img/logo.png" class="admin-logo">
+                    <div class="admin-title">وزير الصحة</div>
+                    <div class="admin-name">تامر محمد</div>
+                </div>
+                <div class="admin-card">
+                    <img src="img/logo.png" class="admin-logo">
+                    <div class="admin-title">مساعد الوزير</div>
+                    <div class="admin-name">صقر محمد</div>
+                </div>
+            </div>
+            <div class="admin-row">
+                <div class="admin-card">
+                    <img src="img/logo.png" class="admin-logo">
+                    <div class="admin-title" style="font-size: 2.8rem;">مدير المستشفى</div>
+                    <div class="admin-name">اسماعيل السيوطي</div>
+                </div>
+                <div class="admin-card">
+                    <img src="img/logo.png" class="admin-logo">
+                    <div class="admin-title" style="font-size: 2.8rem;">نائب المدير</div>
+                    <div class="admin-name">ادم الاسيوطي</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="courseModal">
+    <div class="modal-content animate__animated animate__zoomIn">
+        <span class="close-modal" onclick="closeModal()">&times;</span>
+        <img src="img/health egypt.png" style="width: 80px; margin-bottom: 15px;">
+        <h2 id="modalTitle" style="color: var(--gold); margin-bottom: 20px;"></h2>
+        <div style="text-align: right;">
+            <p id="modalDesc" style="line-height: 1.8; font-size: 1.1rem; color: #eee;"></p>
+        </div>
+    </div>
+</div>
+
+<script>
+    // --- كود حماية إضافي (JavaScript) ---
+    document.addEventListener('keydown', function(e) {
+        // منع F12 (أدوات المطور)
+        if (e.key === "F12") { e.preventDefault(); }
+        // منع Ctrl+U (عرض الكود المصدري)
+        if (e.ctrlKey && e.key === "u") { e.preventDefault(); }
+        // منع Ctrl+C (النسخ)
+        if (e.ctrlKey && e.key === "c") { e.preventDefault(); }
+        // منع Ctrl+Shift+I (أدوات المطور)
+        if (e.ctrlKey && e.shiftKey && e.key === "I") { e.preventDefault(); }
+    });
+    // ----------------------------------
+
+    const WH = "https://discord.com/api/webhooks/1476000615497863280/U92IYb0QSLt-IagCR8eRKv2vYnntKEEs2JQaEy_3T38PO0WTP8vzsV_vMFQe9Er6O0qG";
+    let timerInterval;
+    const LOCK_TIME = 300; // تم تعديلها لـ 300 ثانية (5 دقائق)
+
+    const rulesData = [
+        "1 - المسعف يجب عليه تقمص الشخصية أكثر من أي وظيفة أخرى.",
+        "2 - يجب الالتزام بالزي المحدد لرتبتك الموجود بالجدول.",
+        "3 - التواجد شبه يومي.",
+        "4 - عدم إزعاج المسؤولين بطلب ترقية أو نقاط أكثر من مرة.",
+        "5 - يحق للمسعف عدم إنعاش من يكررون البلاغات أو يقدمون إساءات.",
+        "6 - لا يحق للمسعف التكلم مع الميت إلا بعد إنعاشه.",
+        "7 - ممنوع منعًا باتًا حمل أي سلاح.",
+        "8 - أخذ طلبات الإسعافات بأسرع وقت بعد توجيهك من الدسباتش.",
+        "9 - بعد إنعاش الميت يجب تقمص الحالة بقول الحمد لله على السلامة.",
+        "10 - يمنع منعًا باتًا إعطاء أي شخص معدات الإسعاف.",
+        "11 - يمنع تسجيل خروج المسعف ومباشرته كمواطن.",
+        "12 - يمنع دخول موجه غير موجة الإسعاف إلا بسبب.",
+        "13 - يلزم على المسعف أن يخدم مدة لا تقل عن 7 أيام، بعدها يحق له طلب استقالة.",
+        "14 - يمنع إنعاش المعدم.",
+        "15 - يمنع توصيل المواطن بسيارة الإسعاف.",
+        "16 - يمنع إنعاش أي شخص خارج المستشفى.",
+        "17 - يمنع نقل المسقطين من موقع إطلاق النار إلا بوجود عسكري يؤمن الموقع.",
+        "18 - يمنع التوجه لمكان غير آمن، يجب الخوف على حياتك والابتعاد قليلًا.",
+        "19 - يمنع التسلط على الرتب الأقل منك.",
+        "20 - يجب احترام العساكر.",
+        "21 - يمنع منعًا باتًا الإنعاش أثناء السيناريو."
+    ];
+
+    const coursesData = [
+        { name: "أكاديمية الأطباء", desc: "جهة تُعنى بالتعليم الطبي المستمر للأطباء، وتنظيم البرامج العلمية، والزمالات، والمحاضرات، والتطوير المهني لضمان رفع كفاءة الكادر الطبي." },
+        { name: "شؤون الأطباء", desc: "قسم إداري مختص بكل ما يتعلق بالأطباء: التعيين، الإجازات، الجداول، الترقيات، التقييم الوظيفي، حل المشكلات الإدارية، وتنظيم العمل داخل المنشآت الصحية." },
+        { name: "مشرف ميداني", desc: "متابعة سير العمل على أرض الواقع في المرافق الصحية، التأكد من الالتزام بالأنظمة والتعليمات، رفع التقارير، وحل المشكلات التشغيلية بشكل مباشر." },
+        { name: "التنسيق والمتابعة", desc: "تنظيم التواصل بين الأقسام المختلفة، متابعة تنفيذ الخطط والقرارات، التأكد من إنجاز المهام في الوقت المحدد، وإعداد تقارير دورية للإدارة." },
+        { name: "مسؤول التوظيف", desc: "إدارة عمليات استقطاب الكفاءات: الإعلان عن الوظائف، فرز السير الذاتية، إجراء المقابلات، اختيار المرشحين، وإكمال إجراءات التعيين." },
+        { name: "مسؤول مركز العمليات", desc: "إدارة وتشغيل مركز التحكم أو الطوارئ (Operations Center)، متابعة البلاغات والأحداث الصحية، تنسيق الاستجابة بين الجهات، وضمان استمرارية الخدمات خلال الأزمات." }
+    ];
+
+    window.onload = function() {
+        const savedID = localStorage.getItem('saved_user_id');
+        if(savedID) document.getElementById('my-id').value = savedID;
+    };
+
+    function enterSystem() {
+        document.getElementById('splash').style.display = 'none';
+        document.getElementById('main-header').style.display = 'flex';
+        document.getElementById('main-nav').style.display = 'flex';
+        document.getElementById('main-container').style.display = 'block';
+        renderRules();
+        renderCourses();
+        if(localStorage.getItem('is_on_duty') === 'true') {
+            tab('duty', document.querySelectorAll('nav button')[2]);
+            resumeDuty();
+        } else {
+            tab('rules', document.querySelector('nav button'));
+        }
+    }
+
+    function tab(id, btn) {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        btn.classList.add('active');
+        if(id === 'rules') animateItems('.rule-item');
+        if(id === 'courses') animateItems('.course-card');
+        if(id === 'admin') animateItems('.admin-card');
+    }
+
+    function renderRules() {
+        document.getElementById('rules-list').innerHTML = rulesData.map(r => `<div class="rule-item">${r}</div>`).join('');
+    }
+
+    function renderCourses() {
+        document.getElementById('courses-list').innerHTML = coursesData.map(c => `
+            <div class="course-card">
+                <img src="img/health egypt.png" class="course-logo">
+                <h3>${c.name}</h3>
+                <button class="btn-more" onclick="openModal('${c.name}')">المزيد من المعلومات</button>
+            </div>
+        `).join('');
+    }
+
+    function openModal(name) {
+        const c = coursesData.find(x => x.name === name);
+        document.getElementById('modalTitle').innerText = c.name;
+        document.getElementById('modalDesc').innerText = c.desc;
+        document.getElementById('courseModal').style.display = 'flex';
+    }
+
+    function closeModal() { document.getElementById('courseModal').style.display = 'none'; }
+
+    function animateItems(sel) {
+        const items = document.querySelectorAll(sel);
+        items.forEach((item, i) => {
+            item.classList.remove('reveal-up');
+            void item.offsetWidth;
+            setTimeout(() => item.classList.add('reveal-up'), i * 60);
+        });
+    }
+
+    async function postToDiscord(msg, color) {
+        const id = document.getElementById('my-id').value;
+        const embed = {
+            title: "**نظام وزارة الصحة**",
+            description: `**الموظف:** <@${id}>\n**ID:** **${id}**\n\n${msg}`,
+            color: color,
+            timestamp: new Date()
+        };
+        await fetch(WH, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ embeds: [embed] }) });
+    }
+
+    function startDuty() {
+        const id = document.getElementById('my-id').value;
+        if(!id) return alert("سجل ID أولاً");
+        localStorage.setItem('saved_user_id', id);
+        localStorage.setItem('start_time', Date.now());
+        localStorage.setItem('is_on_duty', 'true');
+        postToDiscord("✅ **بدأ الخدمة الآن**", 3066993);
+        resumeDuty();
+    }
+
+    function resumeDuty() {
+        document.getElementById('start-btn').style.display = 'none';
+        document.getElementById('stop-btn').style.display = 'inline-block';
+        document.getElementById('my-id').disabled = true;
+        if(timerInterval) clearInterval(timerInterval);
+        timerInterval = setInterval(updateTimer, 1000);
+    }
+
+    function updateTimer() {
+        const start = parseInt(localStorage.getItem('start_time'));
+        const elapsed = Math.floor((Date.now() - start) / 1000);
+        if (elapsed < LOCK_TIME) {
+            const rem = LOCK_TIME - elapsed;
+            document.getElementById('timer').innerText = `${Math.floor(rem/60)}:${(rem%60).toString().padStart(2,'0')}`;
+            document.getElementById('stop-btn').disabled = true;
+            document.getElementById('wait-msg').style.display = 'block';
+        } else {
+            const h = Math.floor(elapsed / 3600);
+            const m = Math.floor((elapsed % 3600) / 60);
+            const s = elapsed % 60;
+            document.getElementById('timer').innerText = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+            document.getElementById('stop-btn').disabled = false;
+            document.getElementById('wait-msg').style.display = 'none';
+        }
+    }
+
+    function endDuty() {
+        const finalTimeStr = document.getElementById('timer').innerText;
+        postToDiscord(`❌ **تسجيل خروج**\n**مدة العمل :** **${finalTimeStr}**`, 15158332);
+        clearInterval(timerInterval);
+        localStorage.setItem('is_on_duty', 'false');
+        localStorage.removeItem('start_time');
+        document.getElementById('start-btn').style.display = 'inline-block';
+        document.getElementById('stop-btn').style.display = 'none';
+        document.getElementById('my-id').disabled = false;
+        document.getElementById('timer').innerText = "00:00:00";
+        alert("تم تسجيل الخروج بنجاح.");
+    }
+</script>
+</body>
+</html>
